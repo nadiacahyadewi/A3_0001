@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pam_tugasakhir.ui.theme.Pam_tugasakhirTheme
+import com.example.pam_tugasakhir.ui.viewmodel.ProdukVM.ProdukApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,8 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Pam_tugasakhirTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    ProdukApp(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
