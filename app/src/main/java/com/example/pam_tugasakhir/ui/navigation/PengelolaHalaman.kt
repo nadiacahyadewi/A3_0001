@@ -8,6 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokEntry
+import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokHome
+import com.example.pam_tugasakhir.ui.view.pemasok.EntryPemasokScreen
+import com.example.pam_tugasakhir.ui.view.pemasok.HomePemasokScreen
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiDetail
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiEntry
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiHome
@@ -22,12 +26,13 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         startDestination = DestinasiHome.route,
         modifier = Modifier,
     ) {
+        // Produk Navigation
         composable(DestinasiHome.route) {
             HomeScreen(
-                navigateToItemEntry = {
-                    navController.navigate(DestinasiEntry.route)
-                },
-                onDetailClick = { idProduk ->  // Handle onDetailClick here
+                navigateToItemEntry = { navController.navigate(DestinasiEntry.route) },
+                navigateToPemasok = { navController.navigate(DestinasiPemasokHome.route) },
+                onPemasokClick = { navController.navigate(DestinasiPemasokHome.route) },
+                onDetailClick = { idProduk ->
                     navController.navigate("${DestinasiDetail.route}/$idProduk")
                 }
             )
@@ -45,7 +50,6 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             )
         }
 
-        // Detail Screen
         composable(
             route = "${DestinasiDetail.route}/{idProduk}",
             arguments = listOf(navArgument("idProduk") { type = NavType.StringType })
@@ -59,5 +63,45 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 }
             )
         }
+
+        // Pemasok Navigation
+        composable(DestinasiPemasokHome.route) {
+            HomePemasokScreen(
+                navigateToPemasokEntry = {
+                    navController.navigate(DestinasiPemasokEntry.route)
+                },
+                onDetailClick = { //idPemasok ->
+                    //navController.navigate("${DestinasiPemasokDetail.route}/$idPemasok")
+                },
+                onBack = {
+                    navController.navigate(DestinasiHome.route)
+                },
+            )
+        }
+
+        composable(DestinasiPemasokEntry.route) {
+            EntryPemasokScreen(
+                navigateBack = {
+                    navController.navigate(DestinasiPemasokHome.route) {
+                        popUpTo(DestinasiPemasokHome.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+       /* composable(
+            route = "${DestinasiPemasokDetail.route}/{idPemasok}",
+            arguments = listOf(navArgument("idPemasok") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idPemasok = backStackEntry.arguments?.getString("idPemasok") ?: ""
+            DetailPemasokScreen(
+                idPemasok = idPemasok,
+                onNavigateBack = { navController.navigateUp() },
+                onEditClick = {
+                    navController.navigate("${DestinasiPemasokEntry.route}?idPemasok=$idPemasok")
+                }
+            )*/
     }
 }
