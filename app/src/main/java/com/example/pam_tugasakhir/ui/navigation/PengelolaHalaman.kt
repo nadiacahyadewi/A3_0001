@@ -14,6 +14,10 @@ import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkHome
 import com.example.pam_tugasakhir.ui.view.Merk.DetailMerkScreen
 import com.example.pam_tugasakhir.ui.view.Merk.EntryMerkScreen
 import com.example.pam_tugasakhir.ui.view.Merk.HomeMerkScreen
+import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriEntry
+import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriHome
+import com.example.pam_tugasakhir.ui.view.kategori.EntryKategoriScreen
+import com.example.pam_tugasakhir.ui.view.kategori.HomeKategoriScreen
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokDetail
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokEntry
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokHome
@@ -70,7 +74,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 onNavigateBack = { navController.navigateUp() },
                 onEditClick = {
                     navController.navigate("${DestinasiEntry.route}?idProduk=$idProduk")
-                }
+                },
+                onKategoriClick = {navController.navigate(DestinasiKategoriHome.route)}
             )
         }
 
@@ -156,6 +161,33 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 }
             )
         }
+
+        composable(DestinasiKategoriHome.route) {
+            HomeKategoriScreen(
+                navigateToKategoriEntry = {
+                    navController.navigate(DestinasiKategoriEntry.route)
+                },
+                onDetailClick = { //idMerk ->
+                    //navController.navigate("${DestinasiMerkDetail.route}/$idMerk")
+                },
+                onBack = {
+                    //navController.navigate(DestinasiHome.route)
+                },
+            )
+        }
+        composable(DestinasiKategoriEntry.route) {
+            EntryKategoriScreen(
+                navigateBack = {
+                    navController.navigate(DestinasiKategoriHome.route) {
+                        popUpTo(DestinasiKategoriHome.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+
 
 
     }
