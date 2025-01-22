@@ -1,11 +1,14 @@
 package com.example.pam_tugasakhir.dependenciesinjection
 
+import com.example.pam_tugasakhir.repository.KategoriRepository
 import com.example.pam_tugasakhir.repository.MerkRepository
+import com.example.pam_tugasakhir.repository.NetworkKategoriRepository
 import com.example.pam_tugasakhir.repository.NetworkMerkRepository
 import com.example.pam_tugasakhir.repository.NetworkPemasokRepository
 import com.example.pam_tugasakhir.repository.NetworkProdukRepository
 import com.example.pam_tugasakhir.repository.PemasokRepository
 import com.example.pam_tugasakhir.repository.ProdukRepository
+import com.example.pam_tugasakhir.service.KategoriService
 import com.example.pam_tugasakhir.service.MerkService
 import com.example.pam_tugasakhir.service.PemasokService
 import com.example.pam_tugasakhir.service.ProdukService
@@ -18,6 +21,7 @@ interface AppContainer {
     val produkRepository: ProdukRepository
     val pemasokRepository: PemasokRepository
     val merkRepository: MerkRepository
+    val kategoriRepository: KategoriRepository
 }
 
 class ProdukContainer : AppContainer {
@@ -47,5 +51,12 @@ class ProdukContainer : AppContainer {
     }
     override val merkRepository: MerkRepository by lazy {
         NetworkMerkRepository(merkService)
+    }
+
+    private val kategoriService: KategoriService by lazy {
+        retrofit.create(KategoriService::class.java)
+    }
+    override val kategoriRepository: KategoriRepository by lazy {
+        NetworkKategoriRepository(kategoriService)
     }
 }
