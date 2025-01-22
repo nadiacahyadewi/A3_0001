@@ -8,14 +8,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.pam_tugasakhir.ui.view.DestinasiSplashScreen
 import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkDetail
 import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkEntry
 import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkHome
 import com.example.pam_tugasakhir.ui.view.Merk.DetailMerkScreen
 import com.example.pam_tugasakhir.ui.view.Merk.EntryMerkScreen
 import com.example.pam_tugasakhir.ui.view.Merk.HomeMerkScreen
+import com.example.pam_tugasakhir.ui.view.SplashScreen
+import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriDetail
 import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriEntry
 import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriHome
+import com.example.pam_tugasakhir.ui.view.kategori.DetailKategoriScreen
 import com.example.pam_tugasakhir.ui.view.kategori.EntryKategoriScreen
 import com.example.pam_tugasakhir.ui.view.kategori.HomeKategoriScreen
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokDetail
@@ -35,17 +39,26 @@ import com.example.pam_tugasakhir.ui.view.produk.HomeScreen
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = DestinasiHome.route,
+        startDestination = DestinasiSplashScreen.route,  // Ubah start destination
         modifier = Modifier,
     ) {
+        // Home Start Screen
+        composable(DestinasiSplashScreen.route) {
+            SplashScreen(
+                navigateToHome = {
+                    navController.navigate(DestinasiHome.route) {
+                        popUpTo(DestinasiSplashScreen.route) { inclusive = true }
+                    }
+                }
+            )
+        }
         // Produk Navigation
         composable(DestinasiHome.route) {
             HomeScreen(
                 navigateToItemEntry = { navController.navigate(DestinasiEntry.route) },
                 navigateToPemasok = { navController.navigate(DestinasiPemasokHome.route) },
-                onPemasokClick = { navController.navigate(DestinasiPemasokHome.route) },
                 navigateToMerk = { navController.navigate(DestinasiMerkHome.route) },
-                onMerkClick = { navController.navigate(DestinasiMerkHome.route) },
+                navigateToKategori = { navController.navigate(DestinasiKategoriHome.route) },
                 onDetailClick = { idProduk ->
                     navController.navigate("${DestinasiDetail.route}/$idProduk")
                 }
@@ -89,11 +102,12 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                     navController.navigate("${DestinasiPemasokDetail.route}/$idPemasok")
                 },
                 navigateToMerk = { navController.navigate(DestinasiMerkHome.route) },
-                onMerkClick = { navController.navigate(DestinasiMerkHome.route) },
                 onBack = {
                     navController.navigate(DestinasiHome.route)
                 },
-            )
+                navigateToKategori = { navController.navigate(DestinasiKategoriHome.route) },
+
+                )
         }
 
         composable(DestinasiPemasokEntry.route) {
@@ -133,6 +147,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 onBack = {
                     navController.navigate(DestinasiHome.route)
                 },
+                navigateToPemasok = { navController.navigate(DestinasiPemasokHome.route) },
+
+                navigateToKategori = { navController.navigate(DestinasiKategoriHome.route) },
             )
         }
 
@@ -167,13 +184,17 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 navigateToKategoriEntry = {
                     navController.navigate(DestinasiKategoriEntry.route)
                 },
-                onDetailClick = { //idMerk ->
-                    //navController.navigate("${DestinasiMerkDetail.route}/$idMerk")
+                onDetailClick = { idMerk ->
+                    navController.navigate("${DestinasiKategoriDetail.route}/$idMerk")
                 },
                 onBack = {
-                    //navController.navigate(DestinasiHome.route)
+                    navController.navigate(DestinasiHome.route)
                 },
-            )
+                navigateToPemasok = { navController.navigate(DestinasiPemasokHome.route) },
+
+                navigateToMerk = { navController.navigate(DestinasiMerkHome.route) },
+
+                )
         }
         composable(DestinasiKategoriEntry.route) {
             EntryKategoriScreen(
@@ -186,6 +207,21 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 }
             )
         }
+
+        composable(
+            route = "${DestinasiKategoriDetail.route}/{idKategori}",
+            arguments = listOf(navArgument("idKategori") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idKategori = backStackEntry.arguments?.getString("idKategori") ?: ""
+            DetailKategoriScreen(
+                idKategori = idKategori,
+                onNavigateBack = { navController.popBackStack() },
+                onEditClick = {
+                }
+            )
+        }
+
+
 
 
 
