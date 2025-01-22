@@ -8,7 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkDetail
+import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkEntry
 import com.example.pam_tugasakhir.ui.view.Merk.DestinasiMerkHome
+import com.example.pam_tugasakhir.ui.view.Merk.DetailMerkScreen
+import com.example.pam_tugasakhir.ui.view.Merk.EntryMerkScreen
 import com.example.pam_tugasakhir.ui.view.Merk.HomeMerkScreen
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokDetail
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokEntry
@@ -116,16 +120,43 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         composable(DestinasiMerkHome.route) {
             HomeMerkScreen(
                 navigateToMerkEntry = {
-                    //navController.navigate(DestinasiMerkEntry.route)
+                    navController.navigate(DestinasiMerkEntry.route)
                 },
                 onDetailClick = { idMerk ->
-                    //navController.navigate("${DestinasiMerkDetail.route}/$idMerk")
+                    navController.navigate("${DestinasiMerkDetail.route}/$idMerk")
                 },
                 onBack = {
                     navController.navigate(DestinasiHome.route)
                 },
             )
         }
+
+        composable(DestinasiMerkEntry.route) {
+            EntryMerkScreen(
+                navigateBack = {
+                    navController.navigate(DestinasiMerkHome.route) {
+                        popUpTo(DestinasiMerkHome.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = "${DestinasiMerkDetail.route}/{idMerk}",
+            arguments = listOf(navArgument("idMerk") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idMerk = backStackEntry.arguments?.getString("idMerk") ?: ""
+            DetailMerkScreen(
+                idMerk = idMerk,
+                onNavigateBack = { navController.popBackStack() },
+                onEditClick = {
+                    //navController.navigate("${DestinasiPemasokUpdate.route}?idPemasok=$idPemasok")
+                }
+            )
+        }
+
 
     }
 }
