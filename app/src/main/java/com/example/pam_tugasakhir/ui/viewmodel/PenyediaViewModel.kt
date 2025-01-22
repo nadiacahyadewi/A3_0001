@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pam_tugasakhir.ProdukApplications
+import com.example.pam_tugasakhir.ui.viewmodel.KategoriVM.KategoriHomeVM
 import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkDetailVM
 import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkHomeVM
 import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkInsertVM
@@ -27,6 +28,7 @@ object PenyediaViewModel {
         initializer { MerkHomeVM(aplikasiproduk().container.merkRepository) }
         initializer { MerkInsertVM(aplikasiproduk().container.merkRepository) }
         initializer { MerkDetailVM(aplikasiproduk().container.merkRepository) }
+        initializer { KategoriHomeVM(aplikasiproduk().container.kategoriRepository) }
     }
 }
 
