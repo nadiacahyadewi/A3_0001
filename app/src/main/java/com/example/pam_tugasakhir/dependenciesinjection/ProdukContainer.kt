@@ -1,9 +1,12 @@
 package com.example.pam_tugasakhir.dependenciesinjection
 
+import com.example.pam_tugasakhir.repository.MerkRepository
+import com.example.pam_tugasakhir.repository.NetworkMerkRepository
 import com.example.pam_tugasakhir.repository.NetworkPemasokRepository
 import com.example.pam_tugasakhir.repository.NetworkProdukRepository
 import com.example.pam_tugasakhir.repository.PemasokRepository
 import com.example.pam_tugasakhir.repository.ProdukRepository
+import com.example.pam_tugasakhir.service.MerkService
 import com.example.pam_tugasakhir.service.PemasokService
 import com.example.pam_tugasakhir.service.ProdukService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -14,6 +17,7 @@ import retrofit2.Retrofit
 interface AppContainer {
     val produkRepository: ProdukRepository
     val pemasokRepository: PemasokRepository
+    val merkRepository: MerkRepository
 }
 
 class ProdukContainer : AppContainer {
@@ -36,5 +40,12 @@ class ProdukContainer : AppContainer {
     }
     override val pemasokRepository: PemasokRepository by lazy {
         NetworkPemasokRepository(pemasokService)
+    }
+
+    private val merkService: MerkService by lazy {
+        retrofit.create(MerkService::class.java)
+    }
+    override val merkRepository: MerkRepository by lazy {
+        NetworkMerkRepository(merkService)
     }
 }
