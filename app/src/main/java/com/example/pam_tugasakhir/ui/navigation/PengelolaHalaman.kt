@@ -21,9 +21,11 @@ import com.example.pam_tugasakhir.ui.view.SplashScreen
 import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriDetail
 import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriEntry
 import com.example.pam_tugasakhir.ui.view.kategori.DestinasiKategoriHome
+import com.example.pam_tugasakhir.ui.view.kategori.DestinasiUpdateKategori
 import com.example.pam_tugasakhir.ui.view.kategori.DetailKategoriScreen
 import com.example.pam_tugasakhir.ui.view.kategori.EntryKategoriScreen
 import com.example.pam_tugasakhir.ui.view.kategori.HomeKategoriScreen
+import com.example.pam_tugasakhir.ui.view.kategori.UpdateScreenKategori
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokDetail
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokEntry
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokHome
@@ -242,6 +244,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
 
                 )
         }
+
         composable(DestinasiKategoriEntry.route) {
             EntryKategoriScreen(
                 navigateBack = {
@@ -262,27 +265,21 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             DetailKategoriScreen(
                 idKategori = idKategori,
                 onNavigateBack = { navController.popBackStack() },
-                onEditClick = {
+                onEditClick = {navController.navigate("${DestinasiUpdateKategori.route}/$idKategori")
                 }
             )
         }
 
-
-
-
-
-
-    }
-}
-        /*omposable(
-            route = "${DestinasiPemasokUpdate.route}/{idPemasok}"
+        // Edit Kategori
+        composable(
+            route = "${DestinasiUpdateKategori.route}/{idKategori}",
+            arguments = listOf(navArgument("idKategori") { type = NavType.StringType })
         ) { backStackEntry ->
-            val idPemasok = backStackEntry.arguments?.getString("idPemasok") ?: ""
-            UpdatePemasokScreen(
-                idPemasok = idPemasok,
-                onNavigateBack = { navController.popBackStack() }
+            val idKategori = backStackEntry.arguments?.getString("idKategori") ?: ""
+            UpdateScreenKategori(
+                idKategori = idKategori,
+                onNavigateBack = { navController.navigateUp() }
             )
         }
     }
 }
-*/
