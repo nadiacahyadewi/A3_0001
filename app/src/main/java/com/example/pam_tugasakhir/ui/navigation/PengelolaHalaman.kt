@@ -31,9 +31,11 @@ import com.example.pam_tugasakhir.ui.view.pemasok.HomePemasokScreen
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiDetail
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiEntry
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiHome
+import com.example.pam_tugasakhir.ui.view.produk.DestinasiUpdateProduk
 import com.example.pam_tugasakhir.ui.view.produk.DetailScreen
 import com.example.pam_tugasakhir.ui.view.produk.EntryProdukScreen
 import com.example.pam_tugasakhir.ui.view.produk.HomeScreen
+import com.example.pam_tugasakhir.ui.view.produk.UpdateScreenProduk
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()) {
@@ -85,12 +87,26 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             DetailScreen(
                 idProduk = idProduk,
                 onNavigateBack = { navController.navigateUp() },
-                onEditClick = {
-                    navController.navigate("${DestinasiEntry.route}?idProduk=$idProduk")
+                onEditClick = { idProduk ->
+                    navController.navigate("${DestinasiUpdateProduk.route}/$idProduk")
                 },
+
                 onKategoriClick = {navController.navigate(DestinasiKategoriHome.route)}
             )
         }
+
+        // Edit Produk
+        composable(
+            route = "${DestinasiUpdateProduk.route}/{idProduk}",
+            arguments = listOf(navArgument("idProduk") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idProduk = backStackEntry.arguments?.getString("idProduk") ?: ""
+            UpdateScreenProduk(
+                idProduk = idProduk,
+                onNavigateBack = { navController.navigateUp() }
+            )
+        }
+
 
         // Pemasok Navigation
         composable(DestinasiPemasokHome.route) {
