@@ -25,9 +25,11 @@ import com.example.pam_tugasakhir.ui.view.kategori.HomeKategoriScreen
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokDetail
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokEntry
 import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiPemasokHome
+import com.example.pam_tugasakhir.ui.view.pemasok.DestinasiUpdatePemasok
 import com.example.pam_tugasakhir.ui.view.pemasok.DetailPemasokScreen
 import com.example.pam_tugasakhir.ui.view.pemasok.EntryPemasokScreen
 import com.example.pam_tugasakhir.ui.view.pemasok.HomePemasokScreen
+import com.example.pam_tugasakhir.ui.view.pemasok.UpdateScreenPemasok
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiDetail
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiEntry
 import com.example.pam_tugasakhir.ui.view.produk.DestinasiHome
@@ -147,10 +149,23 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 idPemasok = idPemasok,
                 onNavigateBack = { navController.popBackStack() },
                 onEditClick = {
-                    //navController.navigate("${DestinasiPemasokUpdate.route}?idPemasok=$idPemasok")
+                    navController.navigate("${DestinasiUpdatePemasok.route}/$idPemasok")
                 }
             )
         }
+
+        // Edit Pemasok
+        composable(
+            route = "${DestinasiUpdatePemasok.route}/{idPemasok}",
+            arguments = listOf(navArgument("idPemasok") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idPemasok = backStackEntry.arguments?.getString("idPemasok") ?: ""
+            UpdateScreenPemasok(
+                idPemasok = idPemasok,
+                onNavigateBack = { navController.navigateUp() }
+            )
+        }
+
 
         composable(DestinasiMerkHome.route) {
             HomeMerkScreen(
