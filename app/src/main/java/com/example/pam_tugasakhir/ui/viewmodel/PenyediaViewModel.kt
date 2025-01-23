@@ -11,6 +11,7 @@ import com.example.pam_tugasakhir.ui.viewmodel.KategoriVM.KategoriInsertVM
 import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkDetailVM
 import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkHomeVM
 import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkInsertVM
+import com.example.pam_tugasakhir.ui.viewmodel.MerkVM.MerkUpdateVM
 import com.example.pam_tugasakhir.ui.viewmodel.PemasokVM.PemasokDetailVM
 import com.example.pam_tugasakhir.ui.viewmodel.PemasokVM.PemasokHomeVM
 import com.example.pam_tugasakhir.ui.viewmodel.PemasokVM.PemasokInsertVM
@@ -36,6 +37,7 @@ object PenyediaViewModel {
         initializer { MerkHomeVM(aplikasiproduk().container.merkRepository) }
         initializer { MerkInsertVM(aplikasiproduk().container.merkRepository) }
         initializer { MerkDetailVM(aplikasiproduk().container.merkRepository) }
+        initializer { MerkUpdateVM(aplikasiproduk().container.merkRepository) }
 
         initializer { KategoriHomeVM(aplikasiproduk().container.kategoriRepository) }
         initializer { KategoriInsertVM(aplikasiproduk().container.kategoriRepository) }
