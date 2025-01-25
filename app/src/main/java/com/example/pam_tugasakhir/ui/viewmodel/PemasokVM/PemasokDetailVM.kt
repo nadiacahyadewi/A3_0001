@@ -22,7 +22,7 @@ class PemasokDetailVM(private val repository: PemasokRepository) : ViewModel() {
     val uiState: StateFlow<DetailPemasokUiState> = _uiState.asStateFlow()
 
     // Mendapatkan pemasok berdasarkan id
-    fun getPemasokById(idPemasok: String) {
+    fun getPemasokById(idPemasok: Int) {
         viewModelScope.launch {
             _uiState.value = DetailPemasokUiState.Loading
             try {
@@ -35,7 +35,7 @@ class PemasokDetailVM(private val repository: PemasokRepository) : ViewModel() {
     }
 
     // Memperbarui pemasok
-    fun updatePemasok(idPemasok: String, pemasok: Pemasok) {
+    fun updatePemasok(idPemasok: Int, pemasok: Pemasok) {
         viewModelScope.launch {
             _uiState.value = DetailPemasokUiState.Loading
             try {

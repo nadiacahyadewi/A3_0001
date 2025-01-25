@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class UpdatePemasokEvent(
-    val idPemasok: String,
+    val idPemasok: Int = 0,
     val namaPemasok: String,
     val alamatPemasok: String,
     val teleponPemasok: String
@@ -31,7 +31,7 @@ class PemasokUpdateVM(
 
     private var currentFormData: UpdatePemasokEvent? = null
 
-    fun loadPemasokData(idPemasok: String) {
+    fun loadPemasokData(idPemasok: Int) {
         _uiState.value = UpdatePemasokUiState.Loading
         viewModelScope.launch {
             try {

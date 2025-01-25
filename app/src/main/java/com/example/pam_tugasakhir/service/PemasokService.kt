@@ -24,11 +24,11 @@ interface PemasokService {
     suspend fun getAllPemasok(): List<Pemasok>
 
     @GET("detailpemasok.php")
-    suspend fun getPemasokById(@Query("id_pemasok") idPemasok: String): Pemasok
+    suspend fun getPemasokById(@Query("id_pemasok") idPemasok: Int): Pemasok
 
     @PUT("editpemasok.php")
-    suspend fun updatePemasok(@Query("id_pemasok") idPemasok: String, @Body pemasok: Pemasok)
+    suspend fun updatePemasok(@Query("id_pemasok") idPemasok: Int, @Body pemasok: Pemasok)
 
     @DELETE("deletepemasok.php")
-    suspend fun deletePemasok(@Query("id_pemasok") idPemasok: String): Response<Void>
+    suspend fun deletePemasok(@Query("id_pemasok") idPemasok: Int): Response<Void>
 }

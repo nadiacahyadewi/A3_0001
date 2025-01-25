@@ -146,9 +146,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
 
         composable(
             route = "${DestinasiPemasokDetail.route}/{idPemasok}",
-            arguments = listOf(navArgument("idPemasok") { type = NavType.StringType })
+            arguments = listOf(navArgument("idPemasok") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idPemasok = backStackEntry.arguments?.getString("idPemasok") ?: ""
+            val idPemasok = backStackEntry.arguments?.getInt("idPemasok") ?: 0
             DetailPemasokScreen(
                 idPemasok = idPemasok,
                 onNavigateBack = { navController.popBackStack() },
@@ -161,9 +161,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         // Edit Pemasok
         composable(
             route = "${DestinasiUpdatePemasok.route}/{idPemasok}",
-            arguments = listOf(navArgument("idPemasok") { type = NavType.StringType })
+            arguments = listOf(navArgument("idPemasok") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idPemasok = backStackEntry.arguments?.getString("idPemasok") ?: ""
+            val idPemasok = backStackEntry.arguments?.getInt("idPemasok") ?: 0
             UpdateScreenPemasok(
                 idPemasok = idPemasok,
                 onNavigateBack = { navController.navigateUp() }

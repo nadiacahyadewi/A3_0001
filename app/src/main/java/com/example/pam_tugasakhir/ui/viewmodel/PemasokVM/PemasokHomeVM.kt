@@ -38,7 +38,7 @@ class PemasokHomeVM(private val pemasokRepository: PemasokRepository) : ViewMode
         }
     }
 
-    fun deletePemasok(id: String) {
+    fun deletePemasok(id: Int) {
         viewModelScope.launch {
             try {
                 pemasokRepository.deletePemasok(id)
