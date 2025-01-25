@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class UpdateMerkEvent(
-    val idMerk: String,
+    val idMerk: Int = 0,
     val namaMerk: String,
     val deskripsiMerk: String
 )
@@ -30,7 +30,7 @@ class MerkUpdateVM(
 
     private var currentFormData: UpdateMerkEvent? = null
 
-    fun loadMerkData(idMerk: String) {
+    fun loadMerkData(idMerk: Int) {
         _uiState.value = UpdateMerkUiState.Loading
         viewModelScope.launch {
             try {
