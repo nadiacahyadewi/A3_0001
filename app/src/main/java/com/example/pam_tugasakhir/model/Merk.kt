@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Merk(
     @SerialName("id_merk")
-    val idMerk: String,
+    val idMerk: Int = 0,
 
     @SerialName("nama_merk")
     val namaMerk: String,

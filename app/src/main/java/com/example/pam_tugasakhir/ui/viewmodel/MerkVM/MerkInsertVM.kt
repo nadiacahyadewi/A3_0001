@@ -35,7 +35,7 @@ data class InsertUiState(
 )
 
 data class InsertUiEvent(
-    val idMerk: String = "",
+    val idMerk: Int = 0,
     val namaMerk: String = "",
     val deskripsiMerk: String = ""
 )

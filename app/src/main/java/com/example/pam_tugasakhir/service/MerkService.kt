@@ -25,11 +25,11 @@ interface MerkService {
     suspend fun getAllMerk(): List<Merk>
 
     @GET("detailmerk.php")
-    suspend fun getMerkById(@Query("id_merk") idMerk: String): Merk
+    suspend fun getMerkById(@Query("id_merk") idMerk: Int): Merk
 
     @PUT("editmerk.php")
-    suspend fun updateMerk(@Query("id_merk") idMerk: String, @Body merk: Merk)
+    suspend fun updateMerk(@Query("id_merk") idMerk: Int, @Body merk: Merk)
 
     @DELETE("deletemerk.php")
-    suspend fun deleteMerk(@Query("id_merk") idMerk: String): Response<Void>
+    suspend fun deleteMerk(@Query("id_merk") idMerk: Int): Response<Void>
 }

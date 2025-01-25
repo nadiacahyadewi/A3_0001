@@ -21,7 +21,7 @@ class MerkDetailVM(private val repository: MerkRepository) : ViewModel() {
     val uiState: StateFlow<DetailMerkUiState> = _uiState.asStateFlow()
 
     // Mendapatkan detail merk berdasarkan id
-    fun getMerkById(idMerk: String) {
+    fun getMerkById(idMerk: Int) {
         viewModelScope.launch {
             _uiState.value = DetailMerkUiState.Loading
             try {
@@ -34,7 +34,7 @@ class MerkDetailVM(private val repository: MerkRepository) : ViewModel() {
     }
 
     // Memperbarui merk
-    fun updateMerk(idMerk: String, merk: Merk) {
+    fun updateMerk(idMerk: Int, merk: Merk) {
         viewModelScope.launch {
             _uiState.value = DetailMerkUiState.Loading
             try {

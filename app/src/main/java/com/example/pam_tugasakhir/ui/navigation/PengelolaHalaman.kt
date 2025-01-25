@@ -202,9 +202,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
 
         composable(
             route = "${DestinasiMerkDetail.route}/{idMerk}",
-            arguments = listOf(navArgument("idMerk") { type = NavType.StringType })
+            arguments = listOf(navArgument("idMerk") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idMerk = backStackEntry.arguments?.getString("idMerk") ?: ""
+            val idMerk = backStackEntry.arguments?.getInt("idMerk") ?: 0
             DetailMerkScreen(
                 idMerk = idMerk,
                 onNavigateBack = { navController.popBackStack() },
@@ -217,9 +217,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         // Edit Merk
         composable(
             route = "${DestinasiUpdateMerk.route}/{idMerk}",
-            arguments = listOf(navArgument("idMerk") { type = NavType.StringType })
+            arguments = listOf(navArgument("idMerk") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idMerk = backStackEntry.arguments?.getString("idMerk") ?: ""
+            val idMerk = backStackEntry.arguments?.getInt("idMerk") ?: 0
             UpdateScreenMerk(
                 idMerk = idMerk,
                 onNavigateBack = { navController.navigateUp() }

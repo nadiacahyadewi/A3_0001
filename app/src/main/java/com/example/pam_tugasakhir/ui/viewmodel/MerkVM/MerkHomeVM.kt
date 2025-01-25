@@ -40,7 +40,7 @@ class MerkHomeVM(private val merkRepository: MerkRepository) : ViewModel() {
         }
     }
 
-    fun deleteMerk(id: String) {
+    fun deleteMerk(id: Int) {
         viewModelScope.launch {
             try {
                 merkRepository.deleteMerk(id)
