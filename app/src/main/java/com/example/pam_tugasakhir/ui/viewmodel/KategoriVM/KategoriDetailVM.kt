@@ -22,7 +22,7 @@ class KategoriDetailVM(private val repository: KategoriRepository) : ViewModel()
     val uiState: StateFlow<DetailKategoriUiState> = _uiState.asStateFlow()
 
     // Mendapatkan detail kategori berdasarkan id
-    fun getKategoriById(idKategori: String) {
+    fun getKategoriById(idKategori: Int) {
         viewModelScope.launch {
             _uiState.value = DetailKategoriUiState.Loading
             try {
@@ -35,7 +35,7 @@ class KategoriDetailVM(private val repository: KategoriRepository) : ViewModel()
     }
 
     // Memperbarui kategori
-    fun updateKategori(idKategori: String, kategori: Kategori) {
+    fun updateKategori(idKategori: Int, kategori: Kategori) {
         viewModelScope.launch {
             _uiState.value = DetailKategoriUiState.Loading
             try {

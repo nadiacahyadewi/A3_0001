@@ -25,11 +25,11 @@ interface KategoriService {
     suspend fun getAllKategori(): List<Kategori>
 
     @GET("detailkategori.php")
-    suspend fun getKategoriById(@Query("id_kategori") idKategori: String): Kategori
+    suspend fun getKategoriById(@Query("id_kategori") idKategori: Int): Kategori
 
     @PUT("editkategori.php")
-    suspend fun updateKategori(@Query("id_kategori") idKategori: String, @Body kategori: Kategori)
+    suspend fun updateKategori(@Query("id_kategori") idKategori: Int, @Body kategori: Kategori)
 
     @DELETE("deletekategori.php")
-    suspend fun deleteKategori(@Query("id_kategori") idKategori: String): Response<Void>
+    suspend fun deleteKategori(@Query("id_kategori") idKategori: Int): Response<Void>
 }

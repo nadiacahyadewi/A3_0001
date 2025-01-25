@@ -259,9 +259,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
 
         composable(
             route = "${DestinasiKategoriDetail.route}/{idKategori}",
-            arguments = listOf(navArgument("idKategori") { type = NavType.StringType })
+            arguments = listOf(navArgument("idKategori") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idKategori = backStackEntry.arguments?.getString("idKategori") ?: ""
+            val idKategori = backStackEntry.arguments?.getInt("idKategori") ?: 0
             DetailKategoriScreen(
                 idKategori = idKategori,
                 onNavigateBack = { navController.popBackStack() },
@@ -273,9 +273,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         // Edit Kategori
         composable(
             route = "${DestinasiUpdateKategori.route}/{idKategori}",
-            arguments = listOf(navArgument("idKategori") { type = NavType.StringType })
+            arguments = listOf(navArgument("idKategori") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idKategori = backStackEntry.arguments?.getString("idKategori") ?: ""
+            val idKategori = backStackEntry.arguments?.getInt("idKategori") ?: 0
             UpdateScreenKategori(
                 idKategori = idKategori,
                 onNavigateBack = { navController.navigateUp() }

@@ -9,11 +9,11 @@ interface KategoriRepository {
 
     suspend fun getKategori(): List<Kategori>
 
-    suspend fun updateKategori(idKategori: String, kategori: Kategori)
+    suspend fun updateKategori(idKategori: Int, kategori: Kategori)
 
-    suspend fun deleteKategori(idKategori: String)
+    suspend fun deleteKategori(idKategori: Int)
 
-    suspend fun getKategoriById(idKategori: String): Kategori
+    suspend fun getKategoriById(idKategori: Int): Kategori
 }
 
 class NetworkKategoriRepository(
@@ -23,11 +23,11 @@ class NetworkKategoriRepository(
         kategoriApiService.insertKategori(kategori)
     }
 
-    override suspend fun updateKategori(idKategori: String, kategori: Kategori) {
+    override suspend fun updateKategori(idKategori: Int, kategori: Kategori) {
         kategoriApiService.updateKategori(idKategori, kategori)
     }
 
-    override suspend fun deleteKategori(idKategori: String) {
+    override suspend fun deleteKategori(idKategori: Int) {
         try {
             val response = kategoriApiService.deleteKategori(idKategori)
             if (!response.isSuccessful) {
@@ -47,7 +47,7 @@ class NetworkKategoriRepository(
     override suspend fun getKategori(): List<Kategori> =
         kategoriApiService.getAllKategori()
 
-    override suspend fun getKategoriById(idKategori: String): Kategori {
+    override suspend fun getKategoriById(idKategori: Int): Kategori {
         return kategoriApiService.getKategoriById(idKategori)
     }
 }

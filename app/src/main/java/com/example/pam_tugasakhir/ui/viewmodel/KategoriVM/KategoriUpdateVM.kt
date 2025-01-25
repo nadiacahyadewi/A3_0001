@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class UpdateKategoriEvent(
-    val idKategori: String,
+    val idKategori: Int = 0,
     val namaKategori: String,
     val deskripsiKategori: String
 )
@@ -30,7 +30,7 @@ class KategoriUpdateVM(
 
     private var currentFormData: UpdateKategoriEvent? = null
 
-    fun loadKategoriData(idKategori: String) {
+    fun loadKategoriData(idKategori: Int) {
         _uiState.value = UpdateKategoriUiState.Loading
         viewModelScope.launch {
             try {

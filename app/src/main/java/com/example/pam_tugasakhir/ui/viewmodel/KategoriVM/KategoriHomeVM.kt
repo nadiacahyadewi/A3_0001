@@ -39,7 +39,7 @@ class KategoriHomeVM(private val kategoriRepository: KategoriRepository) : ViewM
         }
     }
 
-    fun deleteKategori(id: String) {
+    fun deleteKategori(id: Int) {
         viewModelScope.launch {
             try {
                 kategoriRepository.deleteKategori(id)
