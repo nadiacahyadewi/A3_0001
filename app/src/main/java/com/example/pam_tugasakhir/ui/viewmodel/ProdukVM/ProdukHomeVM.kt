@@ -38,7 +38,7 @@ class ProdukHomeVM(private val produkRepository: ProdukRepository) : ViewModel()
         }
     }
 
-    fun deleteProduk(id: String) {
+    fun deleteProduk(id: Int) {
         viewModelScope.launch {
             try {
                 produkRepository.deleteProduk(id)

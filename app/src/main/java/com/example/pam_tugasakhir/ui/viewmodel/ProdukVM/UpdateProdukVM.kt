@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class UpdateUiEvent(
-    val idProduk: String,
+    val idProduk: Int = 0,
     val namaProduk: String,
     val deskripsiProduk: String,
     val harga: String,
@@ -35,7 +35,7 @@ class UpdateProdukVM(
 
     private var currentFormData: UpdateUiEvent? = null
 
-    fun loadProdukData(idProduk: String) {
+    fun loadProdukData(idProduk: Int) {
         _uiState.value = UpdateUiState.Loading
         viewModelScope.launch {
             try {
@@ -44,8 +44,8 @@ class UpdateProdukVM(
                     idProduk = produk.idProduk,
                     namaProduk = produk.namaProduk,
                     deskripsiProduk = produk.deskripsiProduk,
-                    harga = produk.harga.toString(),
-                    stok = produk.stok.toString(),
+                    harga = produk.harga,
+                    stok = produk.stok,
                     idKategori = produk.idKategori,
                     idPemasok = produk.idPemasok,
                     idMerk = produk.idMerk

@@ -87,9 +87,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
 
         composable(
             route = "${DestinasiDetail.route}/{idProduk}",
-            arguments = listOf(navArgument("idProduk") { type = NavType.StringType })
+            arguments = listOf(navArgument("idProduk") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idProduk = backStackEntry.arguments?.getString("idProduk") ?: ""
+            val idProduk = backStackEntry.arguments?.getInt("idProduk") ?: 0
             DetailScreen(
                 idProduk = idProduk,
                 onNavigateBack = { navController.navigateUp() },
@@ -104,9 +104,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         // Edit Produk
         composable(
             route = "${DestinasiUpdateProduk.route}/{idProduk}",
-            arguments = listOf(navArgument("idProduk") { type = NavType.StringType })
+            arguments = listOf(navArgument("idProduk") { type = NavType.IntType })
         ) { backStackEntry ->
-            val idProduk = backStackEntry.arguments?.getString("idProduk") ?: ""
+            val idProduk = backStackEntry.arguments?.getInt("idProduk") ?: 0
             UpdateScreenProduk(
                 idProduk = idProduk,
                 onNavigateBack = { navController.navigateUp() }

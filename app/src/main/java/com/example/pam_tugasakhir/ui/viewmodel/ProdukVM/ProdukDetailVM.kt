@@ -21,7 +21,7 @@ class ProdukDetailVM(private val repository: ProdukRepository) : ViewModel() {
     val uiState: StateFlow<DetailProdukUiState> = _uiState.asStateFlow()
 
     // Mendapatkan produk berdasarkan id
-    fun getProdukById(idProduk: String) {
+    fun getProdukById(idProduk: Int) {
         viewModelScope.launch {
             _uiState.value = DetailProdukUiState.Loading
             try {
@@ -34,7 +34,7 @@ class ProdukDetailVM(private val repository: ProdukRepository) : ViewModel() {
     }
 
     // Memperbarui produk
-    fun updateProduk(idProduk: String, produk: Produk) {
+    fun updateProduk(idProduk: Int, produk: Produk) {
         viewModelScope.launch {
             _uiState.value = DetailProdukUiState.Loading
             try {

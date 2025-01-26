@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Produk(
     @SerialName("id_produk")
-    val idProduk: String,
+    val idProduk: Int = 0,
 
     @SerialName("nama_produk")
     val namaProduk: String,

@@ -26,11 +26,11 @@ interface ProdukService {
     suspend fun getAllProduk(): List<Produk>
 
     @GET("detailproduk.php/{id_produk}")
-    suspend fun getProdukById(@Query("id_produk") idProduk: String): Produk
+    suspend fun getProdukById(@Query("id_produk") idProduk: Int): Produk
 
     @PUT("editproduk.php/{id_produk}")
-    suspend fun updateProduk(@Query("id_produk") idProduk: String, @Body produk: Produk)
+    suspend fun updateProduk(@Query("id_produk") idProduk: Int, @Body produk: Produk)
 
     @DELETE("deleteproduk.php/{id_produk}")
-    suspend fun deleteProduk(@Query("id_produk") idProduk: String): Response<Void>
+    suspend fun deleteProduk(@Query("id_produk") idProduk: Int): Response<Void>
 }
