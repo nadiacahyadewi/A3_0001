@@ -6,11 +6,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pam_tugasakhir.model.PilihMenu
 import com.example.pam_tugasakhir.ui.costumwidget.CostumeTopAppBar
+import com.example.pam_tugasakhir.ui.costumwidget.DynamicSelectedTextField
 import com.example.pam_tugasakhir.ui.navigation.DestinasiNavigasi
 import com.example.pam_tugasakhir.ui.viewmodel.PenyediaViewModel
 import com.example.pam_tugasakhir.ui.viewmodel.UpdateProdukVM
@@ -25,12 +26,12 @@ object DestinasiUpdateProduk : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreenProduk(
-    idProduk: String,
+    idProduk: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UpdateProdukVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     val uiState by viewModel.uiState.collectAsState()
 
     // Load data once when the screen opens
@@ -39,12 +40,11 @@ fun UpdateScreenProduk(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdateProduk.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }
@@ -89,7 +89,7 @@ fun UpdateScreenProduk(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateForm(
-    idProduk: String,
+    idProduk: Int,
     namaProduk: String,
     deskripsiProduk: String,
     harga: String,
@@ -144,28 +144,31 @@ fun UpdateForm(
             singleLine = true,
         )
 
-        OutlinedTextField(
-            value = idKategoriState,
-            onValueChange = { idKategoriState = it },
-            label = { Text("ID Kategori") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = idKategoriState,
+            options = PilihMenu.kategoriOption(),
+            label = "Nama Kategori",
+            onValueChangedEvent = { selectedKategori ->
+                idKategoriState = selectedKategori
+            }
         )
 
-        OutlinedTextField(
-            value = idPemasokState,
-            onValueChange = { idPemasokState = it },
-            label = { Text("ID Pemasok") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = idMerkState,
+            options = PilihMenu.merkOption(),
+            label = "Nama Merk",
+            onValueChangedEvent = { selectedMerk ->
+                idMerkState = selectedMerk
+            }
         )
 
-        OutlinedTextField(
-            value = idMerkState,
-            onValueChange = { idMerkState = it },
-            label = { Text("ID Merk") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = idPemasokState,
+            options = PilihMenu.pemasokOption(),
+            label = "Nama Pemasok",
+            onValueChangedEvent = { selectedPemasok ->
+                idPemasokState = selectedPemasok
+            }
         )
 
         Button(

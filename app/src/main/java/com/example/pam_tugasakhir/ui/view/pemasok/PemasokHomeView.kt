@@ -28,13 +28,19 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,25 +65,30 @@ object DestinasiPemasokHome : DestinasiNavigasi {
 fun HomePemasokScreen(
     navigateToPemasokEntry: () -> Unit,
     navigateToMerk: () -> Unit,
+    navigateToKategori: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit = {},
-    onMerkClick: () -> Unit,
+    onDetailClick: (Int) -> Unit = {},
     onBack: () -> Unit = {},
     viewModel: PemasokHomeVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var selectedTab by remember { mutableStateOf(2) }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        "Pemasok",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.SemiBold
+                    Column {
+                        Text(
+                            text = "Supplier Management",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
                         )
-                    )
+                        Text(
+                            text = "Manage Suppliers",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.getPemasok() }) {
@@ -86,68 +97,97 @@ fun HomePemasokScreen(
                             contentDescription = "Refresh"
                         )
                     }
-                },
-                scrollBehavior = scrollBehavior
+                }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = navigateToPemasokEntry,
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
-                modifier = Modifier.padding(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                containerColor = Color(0xFF6C5CE7),
+                contentColor = Color.White
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Pemasok")
-            }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            // Navigation Buttons
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Button(
-                    onClick = onBack,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                    modifier = Modifier.weight(1f)
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Produk", color = Color.White)
-                }
-                Button(
-                    onClick = onMerkClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4)),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Merk", color = Color.White)
+                    Icon(Icons.Default.Add, contentDescription = "Add Supplier")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Tambah Pemasok")
                 }
             }
-
-            // Supplier List
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {
-                HomeStatus(
-                    homeUiState = viewModel.pemasokUiState,
-                    retryAction = { viewModel.getPemasok() },
-                    onMerkClick = navigateToMerk,
-                    onDetailClick = onDetailClick,
-                    onDeleteClick = {
-                        viewModel.deletePemasok(it.idPemasok)
-                        viewModel.getPemasok()
+        },
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Products"
+                        )
+                    },
+                    label = { Text("Produk") },
+                    selected = selectedTab == 0,
+                    onClick = {
+                        selectedTab = 0
+                        onBack()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Categories"
+                        )
+                    },
+                    label = { Text("Kategori") },
+                    selected = selectedTab == 1,
+                    onClick = {
+                        selectedTab = 1
+                        navigateToKategori()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Suppliers"
+                        )
+                    },
+                    label = { Text("Pemasok") },
+                    selected = selectedTab == 2,
+                    onClick = {
+                        selectedTab = 2
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Brands"
+                        )
+                    },
+                    label = { Text("Merk") },
+                    selected = selectedTab == 3,
+                    onClick = {
+                        selectedTab = 3
+                        navigateToMerk()
                     }
                 )
             }
-        }
+        },
+        containerColor = Color(0xFFF5F6FF)
+    ) { innerPadding ->
+        HomeStatus(
+            homeUiState = viewModel.pemasokUiState,
+            retryAction = { viewModel.getPemasok() },
+            onDetailClick = onDetailClick,
+            onDeleteClick = {
+                viewModel.deletePemasok(it.idPemasok)
+                viewModel.getPemasok()
+            },
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
@@ -158,14 +198,18 @@ fun HomeStatus(
     modifier: Modifier = Modifier,
     onMerkClick: () -> Unit = {},
     onDeleteClick: (Pemasok) -> Unit = {},
-    onDetailClick: (String) -> Unit
+    onDetailClick: (Int) -> Unit
 ) {
     when (homeUiState) {
         is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
         is HomeUiState.Success -> {
             if (homeUiState.pemasok.isEmpty()) {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Tidak ada data Pemasok", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = "Tidak ada data Pemasok",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Gray
+                    )
                 }
             } else {
                 PemasokLayout(
@@ -193,78 +237,66 @@ fun PemasokCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Mengganti Box dengan Icon
-            Icon(
-                imageVector = Icons.Default.ExitToApp, // atau icon lain yang sesuai
-                contentDescription = "Supplier Icon",
+            Box(
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(48.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(12.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+                        color = Color(0xFF6C5CE7).copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ExitToApp,
+                    contentDescription = null,
+                    tint = Color(0xFF6C5CE7)
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = pemasok.namaPemasok,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = pemasok.alamatPemasok,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1
-                        )
-                        Text(
-                            text = pemasok.teleponPemasok,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                Text(
+                    text = pemasok.namaPemasok,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+                Text(
+                    text = pemasok.alamatPemasok,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                Text(
+                    text = pemasok.teleponPemasok,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = { onDeleteClick(pemasok) },
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    }
-                }
+            IconButton(
+                onClick = { onDeleteClick(pemasok) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.Gray
+                )
             }
         }
     }

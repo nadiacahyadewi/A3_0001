@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pam_tugasakhir.model.PilihMenu
 import com.example.pam_tugasakhir.ui.costumwidget.CostumeTopAppBar
+import com.example.pam_tugasakhir.ui.costumwidget.DynamicSelectedTextField
 import com.example.pam_tugasakhir.ui.navigation.DestinasiNavigasi
 import com.example.pam_tugasakhir.ui.viewmodel.produk.InsertUiEvent
 import com.example.pam_tugasakhir.ui.viewmodel.PenyediaViewModel
@@ -47,7 +47,6 @@ fun EntryProdukScreen(
     val uiState = viewModel.uiState
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -62,7 +61,6 @@ fun EntryProdukScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
                 .padding(innerPadding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -100,15 +98,6 @@ fun FormInput(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OutlinedTextField(
-            value = insertUiEvent.idProduk,
-            onValueChange = { onValueChange(insertUiEvent.copy(idProduk = it)) },
-            label = { Text("ID Produk") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Produk") },
-            singleLine = true
-        )
 
         OutlinedTextField(
             value = insertUiEvent.namaProduk,
@@ -150,34 +139,31 @@ fun FormInput(
             singleLine = true
         )
 
-        OutlinedTextField(
-            value = insertUiEvent.idKategori,
-            onValueChange = { onValueChange(insertUiEvent.copy(idKategori = it)) },
-            label = { Text("ID Kategori") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Kategori") },
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = insertUiEvent.idKategori,
+            options = PilihMenu.kategoriOption(),
+            label = "Nama Kategori",
+            onValueChangedEvent = { selectedKategori ->
+                onValueChange(insertUiEvent.copy(idKategori = selectedKategori))
+            }
         )
 
-        OutlinedTextField(
-            value = insertUiEvent.idPemasok,
-            onValueChange = { onValueChange(insertUiEvent.copy(idPemasok = it)) },
-            label = { Text("ID Pemasok") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Pemasok") },
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = insertUiEvent.idMerk,
+            options = PilihMenu.merkOption(),
+            label = "Nama Merk",
+            onValueChangedEvent = { selectedMerk ->
+                onValueChange(insertUiEvent.copy(idMerk = selectedMerk))
+            }
         )
 
-        OutlinedTextField(
-            value = insertUiEvent.idMerk,
-            onValueChange = { onValueChange(insertUiEvent.copy(idMerk = it)) },
-            label = { Text("ID Merk") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Merk") },
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = insertUiEvent.idPemasok,
+            options = PilihMenu.pemasokOption(),
+            label = "Nama Pemasok",
+            onValueChangedEvent = { selectedPemasok ->
+                onValueChange(insertUiEvent.copy(idPemasok = selectedPemasok))
+            }
         )
     }
 }

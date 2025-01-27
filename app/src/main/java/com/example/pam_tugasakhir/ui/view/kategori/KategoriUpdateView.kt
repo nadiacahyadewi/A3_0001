@@ -5,7 +5,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pam_tugasakhir.ui.costumwidget.CostumeTopAppBar
@@ -23,12 +22,11 @@ object DestinasiUpdateKategori : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreenKategori(
-    idKategori: String,
+    idKategori: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: KategoriUpdateVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     // Load data once when the screen opens
@@ -37,12 +35,11 @@ fun UpdateScreenKategori(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdateKategori.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }
@@ -82,7 +79,7 @@ fun UpdateScreenKategori(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateFormKategori(
-    idKategori: String,
+    idKategori: Int,
     namaKategori: String,
     deskripsiKategori: String,
     onUpdateClick: (UpdateKategoriEvent) -> Unit,

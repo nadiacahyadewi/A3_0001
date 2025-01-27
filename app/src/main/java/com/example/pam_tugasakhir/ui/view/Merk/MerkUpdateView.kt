@@ -6,8 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pam_tugasakhir.ui.costumwidget.CostumeTopAppBar
@@ -25,12 +23,11 @@ object DestinasiUpdateMerk : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreenMerk(
-    idMerk: String,
+    idMerk: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MerkUpdateVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     // Load data once when the screen opens
@@ -39,12 +36,11 @@ fun UpdateScreenMerk(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdateMerk.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }
@@ -84,7 +80,7 @@ fun UpdateScreenMerk(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateFormMerk(
-    idMerk: String,
+    idMerk: Int,
     namaMerk: String,
     deskripsiMerk: String,
     onUpdateClick: (UpdateMerkEvent) -> Unit,

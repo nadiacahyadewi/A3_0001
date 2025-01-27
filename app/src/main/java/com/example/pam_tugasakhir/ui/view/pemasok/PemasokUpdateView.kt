@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,12 +26,11 @@ object DestinasiUpdatePemasok : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreenPemasok(
-    idPemasok: String,
+    idPemasok: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PemasokUpdateVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     // Load data once when the screen opens
@@ -41,12 +39,11 @@ fun UpdateScreenPemasok(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdatePemasok.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }
@@ -87,7 +84,7 @@ fun UpdateScreenPemasok(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateFormPemasok(
-    idPemasok: String,
+    idPemasok: Int,
     namaPemasok: String,
     alamatPemasok: String,
     teleponPemasok: String,

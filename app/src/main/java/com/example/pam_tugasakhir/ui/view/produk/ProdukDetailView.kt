@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -25,54 +29,58 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pam_tugasakhir.model.Produk
 import com.example.pam_tugasakhir.ui.costumwidget.CostumeTopAppBar
 import com.example.pam_tugasakhir.ui.navigation.DestinasiNavigasi
+import com.example.pam_tugasakhir.ui.view.Merk.OnError
+import com.example.pam_tugasakhir.ui.view.Merk.OnLoading
 import com.example.pam_tugasakhir.ui.viewmodel.produk.DetailProdukUiState
 import com.example.pam_tugasakhir.ui.viewmodel.PenyediaViewModel
 import com.example.pam_tugasakhir.ui.viewmodel.produk.ProdukDetailVM
 
 object DestinasiDetail : DestinasiNavigasi {
-    override val route = "detail_produk"
+    override val route = "detail produk"
     override val titleRes = "Detail Produk"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    idProduk: String,
+    idProduk: Int,
     onNavigateBack: () -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (Int) -> Unit,
+    onKategoriClick: () -> Unit,
     viewModel: ProdukDetailVM = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idProduk) {
         viewModel.getProdukById(idProduk)
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiDetail.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onEditClick,
+                onClick = {onEditClick(idProduk)},
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(18.dp)
             ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Produk")
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Produk",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
         },
     ) { innerPadding ->
@@ -83,12 +91,29 @@ fun DetailScreen(
                     modifier = modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    DetailProdukCard(produk = state.produk, onEditClick = onEditClick)
-                    Spacer(modifier = Modifier.weight(1f))
+                    DetailProdukCard(produk = state.produk)
+
+                    Button(
+                        onClick = onKategoriClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 4.dp
+                        )
+                    ) {
+                        Text(
+                            "Lihat Kategori Lainnya",
+                            style = MaterialTheme.typography.labelLarge,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
                 }
             }
             is DetailProdukUiState.Error -> OnError(retryAction = { viewModel.getProdukById(idProduk) })
@@ -97,62 +122,92 @@ fun DetailScreen(
 }
 
 @Composable
-fun DetailProdukCard(produk: Produk, onEditClick: () -> Unit) {
+fun DetailProdukCard(
+    produk: Produk,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Header section with product name
+            Text(
+                text = produk.namaProduk,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    color = MaterialTheme.colorScheme.primary
+                )
+            )
+
+            // Price section
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(
-                        text = "Nama Produk: ${produk.namaProduk}",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                Text(
+                    text = "Rp. ${produk.harga}",
+                    style = MaterialTheme.typography.titleLarge
+                )
 
-                    Text(
-                        text = "ID Produk: ${produk.idProduk}",
-                        style = MaterialTheme.typography.bodyLarge
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
-                    Text(
-                        text = "Harga: Rp.${produk.harga}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                ) {
                     Text(
                         text = "Stok: ${produk.stok}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "Deskripsi: ${produk.deskripsiProduk}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "ID Kategori: ${produk.idKategori}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "ID Pemasok: ${produk.idPemasok}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "ID Merk: ${produk.idMerk}",
-                        style = MaterialTheme.typography.bodyLarge
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
-                IconButton(onClick = onEditClick) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Produk")
-                }
+            }
+
+            // Divider
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.outlineVariant
+            )
+
+            // Product details
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "Deskripsi: ${produk.deskripsiProduk}",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+                Text(
+                    text = "Kategori: ${produk.idKategori}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "Pemasok: ${produk.idPemasok}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "Merk: ${produk.idMerk}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }
 }
-

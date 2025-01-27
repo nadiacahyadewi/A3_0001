@@ -4,23 +4,17 @@ package com.example.pam_tugasakhir.ui.view.pemasok
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,8 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pam_tugasakhir.model.Pemasok
@@ -50,32 +42,31 @@ object DestinasiPemasokDetail : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailPemasokScreen(
-    idPemasok: String,
+    idPemasok: Int,
     onNavigateBack: () -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (Int) -> Unit,
     viewModel: PemasokDetailVM = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
 
     LaunchedEffect(idPemasok) {
         viewModel.getPemasokById(idPemasok)
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiPemasokDetail.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onEditClick,
+                onClick = {onEditClick(idPemasok)},
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(18.dp)
             ) {
@@ -98,25 +89,6 @@ fun DetailPemasokScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     DetailPemasokCard(pemasok = state.pemasok)
-
-                    Button(
-                        onClick = {},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 4.dp
-                        )
-                    ) {
-                        Text(
-                            "Lihat Pemasok Lainnya",
-                            style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    }
                 }
             }
             is DetailPemasokUiState.Error -> OnError(retryAction = { viewModel.getPemasokById(idPemasok) })

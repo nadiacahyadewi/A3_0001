@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pam_tugasakhir.model.Merk
@@ -46,32 +45,30 @@ object DestinasiMerkDetail : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailMerkScreen(
-    idMerk: String,
+    idMerk: Int,
     onNavigateBack: () -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (Int) -> Unit,
     viewModel: MerkDetailVM = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idMerk) {
         viewModel.getMerkById(idMerk)
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiMerkDetail.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onEditClick,
+                onClick = {onEditClick(idMerk)},
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(18.dp)
             ) {
@@ -94,25 +91,6 @@ fun DetailMerkScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     DetailMerkCard(merk = state.merk)
-
-                    Button(
-                        onClick = {},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 4.dp
-                        )
-                    ) {
-                        Text(
-                            "Lihat Merk Lainnya",
-                            style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    }
                 }
             }
             is DetailMerkUiState.Error -> OnError(retryAction = { viewModel.getMerkById(idMerk) })

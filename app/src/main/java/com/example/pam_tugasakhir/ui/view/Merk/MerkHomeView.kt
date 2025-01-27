@@ -24,14 +24,18 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -54,23 +58,30 @@ object DestinasiMerkHome : DestinasiNavigasi {
 fun HomeMerkScreen(
     navigateToMerkEntry: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit = {},
+    onDetailClick: (Int) -> Unit = {},
     onBack: () -> Unit = {},
+    navigateToPemasok: () -> Unit,
+    navigateToKategori: () -> Unit,
     viewModel: MerkHomeVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        "Merk",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.SemiBold
+                    Column {
+                        Text(
+                            text = "Brand Management",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
                         )
-                    )
+                        Text(
+                            text = "Manage Brands",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.getMerk() }) {
@@ -79,99 +90,97 @@ fun HomeMerkScreen(
                             contentDescription = "Refresh"
                         )
                     }
-                },
-                scrollBehavior = scrollBehavior
+                }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = navigateToMerkEntry,
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
-                modifier = Modifier.padding(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                containerColor = Color(0xFF6C5CE7),
+                contentColor = Color.White
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Merk")
-            }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            // Navigation Buttons
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Button(
-                    onClick = onBack,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                    modifier = Modifier.weight(1f)
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Produk", color = Color.White)
-                }
-                Button(
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4)),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Merk", color = Color.White)
+                    Icon(Icons.Default.Add, contentDescription = "Add Brand")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Tambah Merk")
                 }
             }
-
-            // Merk List
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {
-                HomeStatus(
-                    homeUiState = viewModel.merkUiState,
-                    retryAction = { viewModel.getMerk() },
-                    onDetailClick = onDetailClick,
-                    onDeleteClick = {
-                        viewModel.deleteMerk(it.idMerk)
-                        viewModel.getMerk()
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun HomeStatus(
-    homeUiState: HomeUiState,
-    retryAction: () -> Unit,
-    modifier: Modifier = Modifier,
-    onDeleteClick: (Merk) -> Unit = {},
-    onDetailClick: (String) -> Unit
-) {
-    when (homeUiState) {
-        is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
-        is HomeUiState.Success -> {
-            if (homeUiState.merk.isEmpty()) {
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Tidak ada data Merk", style = MaterialTheme.typography.bodyLarge)
-                }
-            } else {
-                MerkLayout(
-                    merk = homeUiState.merk,
-                    modifier = modifier.fillMaxWidth(),
-                    onDetailClick = {
-                        onDetailClick(it.idMerk)
+        },
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Products"
+                        )
                     },
-                    onDeleteClick = {
-                        onDeleteClick(it)
+                    label = { Text("Produk") },
+                    selected = selectedTab == 1,
+                    onClick = {
+                        selectedTab = 1
+                        onBack()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Categories"
+                        )
+                    },
+                    label = { Text("Kategori") },
+                    selected = selectedTab == 1,
+                    onClick = {
+                        selectedTab = 1
+                        navigateToKategori()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Suppliers"
+                        )
+                    },
+                    label = { Text("Pemasok") },
+                    selected = selectedTab == 1,
+                    onClick = {
+                        selectedTab = 1
+                        navigateToPemasok()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Brands"
+                        )
+                    },
+                    label = { Text("Merk") },
+                    selected = selectedTab == 0,
+                    onClick = {
+                        selectedTab = 0
                     }
                 )
             }
-        }
-        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+        },
+        containerColor = Color(0xFFF5F6FF)
+    ) { innerPadding ->
+        HomeStatus(
+            homeUiState = viewModel.merkUiState,
+            retryAction = { viewModel.getMerk() },
+            onDetailClick = onDetailClick,
+            onDeleteClick = {
+                viewModel.deleteMerk(it.idMerk)
+                viewModel.getMerk()
+            },
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
@@ -184,67 +193,53 @@ fun MerkCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Mengganti Box dengan Icon
-            Icon(
-                imageVector = Icons.Default.ExitToApp, // atau icon lain yang sesuai
-                contentDescription = "Merk Icon",
+            Box(
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(48.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(12.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+                        color = Color(0xFF6C5CE7).copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = Color(0xFF6C5CE7)
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = merk.namaMerk,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                    }
+            Text(
+                text = merk.namaMerk,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = { onDeleteClick(merk) },
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    }
-                }
+            IconButton(
+                onClick = { onDeleteClick(merk) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.Gray
+                )
             }
         }
     }
@@ -262,7 +257,7 @@ fun MerkLayout(
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(merk) { item ->
             MerkCard(
@@ -270,48 +265,81 @@ fun MerkLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDetailClick(item) },
-                onDeleteClick = {
-                    onDeleteClick(item)
-                }
+                onDeleteClick = onDeleteClick
             )
         }
     }
 }
 
-// Keep existing Loading and Error states
 @Composable
 fun OnLoading(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.loading),
-        contentDescription = stringResource(R.string.loading)
-    )
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = Color(0xFF6C5CE7)
+        )
+    }
 }
 
 @Composable
 fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.error),
-            contentDescription = stringResource(R.string.error),
-            modifier = Modifier.size(150.dp)
-        )
-        Spacer(modifier = Modifier.size(16.dp))
         Text(
-            text = stringResource(R.string.loading_failed),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.error
-            )
+            text = "Tidak ada data Merk",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Gray
         )
+        Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = retryAction,
-            modifier = Modifier.padding(top = 8.dp)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF6C5CE7)
+            )
         ) {
-            Text(text = stringResource(R.string.retry))
+            Text("Retry", color = Color.White)
         }
+    }
+}
+
+@Composable
+fun HomeStatus(
+    homeUiState: HomeUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Merk) -> Unit = {},
+    onDetailClick: (Int) -> Unit
+) {
+    when (homeUiState) {
+        is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+        is HomeUiState.Success -> {
+            if (homeUiState.merk.isEmpty()) {
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Tidak ada data Merk",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Gray
+                    )
+                }
+            } else {
+                MerkLayout(
+                    merk = homeUiState.merk,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { merk -> onDetailClick(merk.idMerk) },
+                    onDeleteClick = onDeleteClick
+                )
+            }
+        }
+        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
     }
 }

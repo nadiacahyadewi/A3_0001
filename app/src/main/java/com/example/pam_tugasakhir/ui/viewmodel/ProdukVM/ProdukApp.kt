@@ -1,6 +1,7 @@
 package com.example.pam_tugasakhir.ui.viewmodel.ProdukVM
 
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,9 +16,9 @@ import com.example.pam_tugasakhir.ui.navigation.PengelolaHalaman
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProdukApp(modifier: Modifier = Modifier) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
+        contentWindowInsets = WindowInsets(0)
         //topBar = {TopAppBar(scrollBehavior = scrollBehavior)}
     ) {
         Surface(

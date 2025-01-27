@@ -25,13 +25,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,22 +57,29 @@ object DestinasiKategoriHome : DestinasiNavigasi {
 fun HomeKategoriScreen(
     navigateToKategoriEntry: () -> Unit,
     onBack: () -> Unit = {},
-    onDetailClick: (String) -> Unit = {},
+    onDetailClick: (Int) -> Unit,
+    navigateToPemasok: () -> Unit,
+    navigateToMerk: () -> Unit,
     viewModel: KategoriHomeVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var selectedTab by remember { mutableStateOf(1) }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        "Kategori",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.SemiBold
+                    Column {
+                        Text(
+                            text = "Kategori Management",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
                         )
-                    )
+                        Text(
+                            text = "Manage Categories",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.getKategori() }) {
@@ -74,43 +88,97 @@ fun HomeKategoriScreen(
                             contentDescription = "Refresh"
                         )
                     }
-                },
-                scrollBehavior = scrollBehavior
+                }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = navigateToKategoriEntry,
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
-                modifier = Modifier.padding(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                containerColor = Color(0xFF6C5CE7),
+                contentColor = Color.White
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Kategori")
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Category")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Tambah Kategori")
+                }
             }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            // Daftar Kategori
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {
-                HomeStatus(
-                    homeUiState = viewModel.kategoriUiState,
-                    retryAction = { viewModel.getKategori() },
-                    onDeleteClick = {
-                        viewModel.deleteKategori(it.idKategori)
-                        viewModel.getKategori()
+        },
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Product"
+                        )
+                    },
+                    label = { Text("Produk") },
+                    selected = selectedTab == 0,
+                    onClick = {
+                        selectedTab = 0
+                        onBack()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Categories"
+                        )
+                    },
+                    label = { Text("Kategori") },
+                    selected = selectedTab == 1,
+                    onClick = {
+                        selectedTab = 1
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Suppliers"
+                        )
+                    },
+                    label = { Text("Pemasok") },
+                    selected = selectedTab == 2,
+                    onClick = {
+                        selectedTab = 2
+                        navigateToPemasok()
+                    }
+                )
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Brands"
+                        )
+                    },
+                    label = { Text("Merk") },
+                    selected = selectedTab == 3,
+                    onClick = {
+                        selectedTab = 3
+                        navigateToMerk()
                     }
                 )
             }
-        }
+        },
+        containerColor = Color(0xFFF5F6FF)
+    ) { innerPadding ->
+        HomeStatus(
+            homeUiState = viewModel.kategoriUiState,
+            retryAction = { viewModel.getKategori() },
+            onDeleteClick = { kategori ->
+                viewModel.deleteKategori(kategori.idKategori)
+                viewModel.getKategori()
+            },
+            onDetailClick = { kategori -> onDetailClick(kategori.idKategori) },
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
@@ -119,20 +187,29 @@ fun HomeStatus(
     homeUiState: HomeUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    onDeleteClick: (Kategori) -> Unit = {}
+    onDeleteClick: (Kategori) -> Unit,
+    onDetailClick: (Kategori) -> Unit
 ) {
     when (homeUiState) {
         is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
         is HomeUiState.Success -> {
             if (homeUiState.kategori.isEmpty()) {
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Tidak ada data Kategori", style = MaterialTheme.typography.bodyLarge)
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Tidak ada data Kategori",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Gray
+                    )
                 }
             } else {
                 KategoriLayout(
                     kategori = homeUiState.kategori,
                     modifier = modifier.fillMaxWidth(),
-                    onDeleteClick = { onDeleteClick(it) }
+                    onDeleteClick = onDeleteClick,
+                    onDetailClick = onDetailClick
                 )
             }
         }
@@ -144,23 +221,42 @@ fun HomeStatus(
 fun KategoriCard(
     kategori: Kategori,
     modifier: Modifier = Modifier,
-    onDeleteClick: (Kategori) -> Unit = {}
+    onDeleteClick: (Kategori) -> Unit,
+    onDetailClick: (Kategori) -> Unit
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            .padding(vertical = 8.dp)
+            .clickable { onDetailClick(kategori) },
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        color = Color(0xFF6C5CE7).copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = Color(0xFF6C5CE7)
+                )
+            }
+
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(
@@ -168,26 +264,24 @@ fun KategoriCard(
             ) {
                 Text(
                     text = kategori.namaKategori,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
                 )
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = kategori.deskripsiKategori,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.Gray
                 )
             }
 
             IconButton(
-                onClick = { onDeleteClick(kategori) },
-                modifier = Modifier.size(32.dp)
+                onClick = { onDeleteClick(kategori) }
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
-                    tint = MaterialTheme.colorScheme.error
+                    tint = Color.Gray
                 )
             }
         }
@@ -198,20 +292,21 @@ fun KategoriCard(
 fun KategoriLayout(
     kategori: List<Kategori>,
     modifier: Modifier = Modifier,
-    onDeleteClick: (Kategori) -> Unit = {}
+    onDeleteClick: (Kategori) -> Unit,
+    onDetailClick: (Kategori) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(kategori) { item ->
             KategoriCard(
                 kategori = item,
-                modifier = Modifier.fillMaxWidth(),
-                onDeleteClick = { onDeleteClick(item) }
+                onDeleteClick = onDeleteClick,
+                onDetailClick = onDetailClick
             )
         }
     }
@@ -223,20 +318,34 @@ fun OnLoading(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = Color(0xFF6C5CE7)
+        )
     }
 }
 
 @Composable
 fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Gagal memuat data. Silakan coba lagi.")
-        Button(onClick = retryAction) {
-            Text("Coba Lagi")
+        Text(
+            text = "Tidak ada data Kategori",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Gray
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = retryAction,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF6C5CE7)
+            )
+        ) {
+            Text("Retry", color = Color.White)
         }
     }
 }
